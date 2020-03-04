@@ -10,25 +10,25 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
 
-from keras.models import Model
-from keras.layers import Input
-from keras.layers import Dense
-from keras.layers import Lambda
-from keras.layers import Activation
-from keras.layers import BatchNormalization
-from keras.layers import MaxPooling2D
-from keras.layers import GlobalAveragePooling2D
-from keras.layers import GlobalMaxPooling2D
-from keras.layers import Conv2D
-from keras.layers import concatenate
-from keras.layers import add
-from keras.regularizers import l2
-from keras.utils import conv_utils
-from keras.utils.data_utils import get_file
-from keras.engine.topology import get_source_inputs
-from keras_applications.imagenet_utils import _obtain_input_shape
-from keras.applications.imagenet_utils import decode_predictions
-from keras import backend as K
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Lambda
+from tensorflow.keras.layers import Activation
+from tensorflow.keras.layers import BatchNormalization
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import GlobalAveragePooling2D
+from tensorflow.keras.layers import GlobalMaxPooling2D
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import concatenate
+from tensorflow.keras.layers import add
+from tensorflow.keras.regularizers import l2
+#from tensorflow.keras.utils import conv_utils
+#from tensorflow.keras.utils.data_utils import get_file
+from tensorflow.keras.utils import get_source_inputs
+#from tensorflow.keras_applications.imagenet_utils import _obtain_input_shape
+from tensorflow.keras.applications.imagenet_utils import decode_predictions
+from tensorflow.keras import backend as K
 
 __all__ = ['DualPathNetwork', 'DPN92', 'DPN98', 'DPN137', 'DPN107', 'preprocess_input', 'decode_predictions']
 
@@ -149,11 +149,11 @@ def DualPathNetwork(input_shape=None,
                                                 "of the depth list."
 
     # Determine proper input shape
-    input_shape = _obtain_input_shape(input_shape,
-                                      default_size=224,
-                                      min_size=112,
-                                      data_format=K.image_data_format(),
-                                      require_flatten=include_top)
+    #input_shape = _obtain_input_shape(input_shape,
+    #                                  default_size=224,
+    #                                  min_size=112,
+    #                                  data_format=K.image_data_format(),
+    #                                  require_flatten=include_top)
 
     if input_tensor is None:
         img_input = Input(shape=input_shape)
@@ -460,9 +460,9 @@ def _create_dpn(nb_classes, img_input, include_top, initial_conv_filters,
 
     if include_top:
         avg = GlobalAveragePooling2D()(x)
-        max = GlobalMaxPooling2D()(x)
-        x = add([avg, max])
-        x = Lambda(lambda z: 0.5 * z)(x)
+        #max = GlobalMaxPooling2D()(x)
+        #x = add([avg, max])
+        x = Lambda(lambda z: 0.5 * z)(avg)
         x = Dense(nb_classes, use_bias=False, kernel_regularizer=l2(weight_decay),
                   kernel_initializer='he_normal', activation='softmax')(x)
     else:
