@@ -235,7 +235,7 @@ def _initial_conv_block_inception(input, initial_conv_filters, weight_decay=5e-4
 
     x = Conv2D(initial_conv_filters, (7, 7), padding='same', use_bias=False, kernel_initializer='he_normal',
                kernel_regularizer=l2(weight_decay), strides=(2, 2))(input)
-    x = BatchNormalization(axis=channel_axis)(x)
+    x = BatchNormalization(momentum=0.5, axis=channel_axis)(x)
     x = Activation('relu')(x)
 
     x = MaxPooling2D((3, 3), strides=(2, 2), padding='same')(x)
@@ -256,7 +256,7 @@ def _bn_relu_conv_block(input, filters, kernel=(3, 3), stride=(1, 1), weight_dec
 
     x = Conv2D(filters, kernel, padding='same', use_bias=False, kernel_initializer='he_normal',
                kernel_regularizer=l2(weight_decay), strides=stride)(input)
-    x = BatchNormalization(axis=channel_axis)(x)
+    x = BatchNormalization(momentum=0.5, axis=channel_axis)(x)
     x = Activation('relu')(x)
     return x
 
@@ -280,7 +280,7 @@ def _grouped_convolution_block(input, grouped_channels, cardinality, strides, we
         # with cardinality 1, it is a standard convolution
         x = Conv2D(grouped_channels, (3, 3), padding='same', use_bias=False, strides=strides,
                    kernel_initializer='he_normal', kernel_regularizer=l2(weight_decay))(init)
-        x = BatchNormalization(axis=channel_axis)(x)
+        x = BatchNormalization(momentum=0.5, axis=channel_axis)(x)
         x = Activation('relu')(x)
         return x
 
@@ -295,7 +295,7 @@ def _grouped_convolution_block(input, grouped_channels, cardinality, strides, we
         group_list.append(x)
 
     group_merge = concatenate(group_list, axis=channel_axis)
-    group_merge = BatchNormalization(axis=channel_axis)(group_merge)
+    group_merge = BatchNormalization(momentum=0.5, axis=channel_axis)(group_merge)
     group_merge = Activation('relu')(group_merge)
     return group_merge
 
